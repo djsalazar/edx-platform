@@ -1081,11 +1081,9 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
 
         field_data - the `FieldData` to use for backing XBlock storage.
         """
-
         # Usage_store is unused, and field_data is often supplanted with an
         # explicit field_data during construct_xblock.
         super(ModuleSystem, self).__init__(id_reader=None, field_data=field_data, **kwargs)
-
         self.STATIC_URL = static_url
         self.xqueue = xqueue
         self.track_function = track_function
@@ -1148,7 +1146,6 @@ class ModuleSystem(ConfigurableFragmentWrapper, Runtime):  # pylint: disable=abs
 
     def local_resource_url(self, block, uri):
         raise NotImplementedError("edX Platform doesn't currently implement XBlock resource urls")
-
 
 class DoNothingCache(object):
     """A duck-compatible object to use in ModuleSystem when there's no cache."""

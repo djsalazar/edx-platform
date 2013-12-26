@@ -66,4 +66,13 @@ Feature: LMS.LTI component
   Then I see text "Problem Scores: 5/10"
   And I see graph with total progress "5%"
 
-
+ #8
+  Scenario: Graded LTI component in LMS role's masquerading correctly works
+  Given the course has correct LTI credentials
+  And the course has an LTI component with correct fields:
+  | open_in_a_new_page | has_score |
+  | False              | True      |
+  And I view the LTI and it is rendered in iframe
+  And I see in iframe that LTI role is Instructor
+  And I switch to Student view
+  Then I see in iframe that LTI role is Student

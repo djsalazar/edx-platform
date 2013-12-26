@@ -26,6 +26,8 @@ from .session_kv_store import SessionKeyValueStore
 from .helpers import render_from_lms
 from ..utils import get_course_for_item
 
+from student.auth import get_user_role
+
 __all__ = ['preview_handler']
 
 log = logging.getLogger(__name__)
@@ -103,7 +105,7 @@ def _preview_module_system(request, descriptor):
 
     course_id = get_course_for_item(descriptor.location).location.course_id
 
-    return PreviewModuleSystem(
+    preview_module_system = PreviewModuleSystem(
         static_url=settings.STATIC_URL,
         # TODO (cpennington): Do we want to track how instructors are using the preview problems?
         track_function=lambda event_type, event: None,
@@ -133,6 +135,10 @@ def _preview_module_system(request, descriptor):
         ),
         error_descriptor_class=ErrorDescriptor,
     )
+
+    preview_module_system.set('user_role', lambda: get_user_role(request.user, course_id))
+
+    return preview_module_system
 
 
 def _load_preview_module(request, descriptor):

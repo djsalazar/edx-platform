@@ -23,6 +23,8 @@ from xmodule.mako_module import MakoDescriptorSystem
 from xmodule.error_module import ErrorDescriptor
 from xmodule.modulestore.xml import LocationReader
 
+from courseware.access import get_user_role
+
 
 # Location of common test DATA directory
 # '../../../../edx-platform/common/test/data/'
@@ -61,7 +63,7 @@ def get_test_system(course_id=''):
     where `my_render_func` is a function of the form my_render_func(template, context).
 
     """
-    return TestModuleSystem(
+    system = TestModuleSystem(
         static_url='/static',
         track_function=Mock(),
         get_module=Mock(),
@@ -78,6 +80,8 @@ def get_test_system(course_id=''):
         course_id=course_id,
         error_descriptor_class=ErrorDescriptor,
     )
+    system.set('user_role', lambda: get_user_role(Mock(is_staff=False), course_id))
+    return system
 
 
 def get_test_descriptor_system():

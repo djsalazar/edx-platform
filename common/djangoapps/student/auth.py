@@ -10,6 +10,8 @@ from django.conf import settings
 from student.roles import GlobalStaff, CourseCreatorRole, CourseStaffRole, CourseInstructorRole, CourseRole, \
     CourseBetaTesterRole
 
+from courseware.courses import get_course
+
 
 def has_access(user, role):
     """
@@ -84,3 +86,12 @@ def _check_caller_authority(caller, role):
         if not has_access(caller, CourseInstructorRole(role.location)):
             raise PermissionDenied
 
+def get_user_role(user, course_id):
+    """
+    Return corresponding string if user has staff or instructor role in Studio.
+    """
+    course = get_course(course_id)
+    if has_access(user, CourseInstructorRole(course.location)):
+        return 'instructor'
+    elif has_access(user, CourseStaffRole(course.location)):
+        return 'staff'
