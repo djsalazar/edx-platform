@@ -36,6 +36,7 @@ if Backbone?
       @$el.find('.post-extended-content').hide()
       if @expanded
         @makeWmdEditor "reply-body"
+        @renderAddResponseButton()
         @renderResponses()
       @
     createShowView: () ->
@@ -106,6 +107,7 @@ if Backbone?
       @makeWmdEditor "reply-body"
       @renderAttrs()
       if @$el.find('.loading').length
+        @renderAddResponseButton()
         @renderResponses()
 
     collapsePost: (event) ->

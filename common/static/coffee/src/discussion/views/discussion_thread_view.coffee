@@ -3,6 +3,13 @@ if Backbone?
 
     events:
       "click .discussion-submit-post": "submitComment"
+      "click .add-response-btn": "scrollToAddResponse"
+
+    scrollToAddResponse: (event) =>
+      event.preventDefault()
+      form = $('form.discussion-reply-new')
+      $('html, body').scrollTop(form.offset().top)
+      form.find('.wmd-panel textarea').focus()
 
     $: (selector) ->
       @$el.find(selector)
@@ -25,6 +32,7 @@ if Backbone?
 
       @$("span.timeago").timeago()
       @makeWmdEditor "reply-body"
+      @renderAddResponseButton()
       @renderResponses()
       @
 
@@ -55,6 +63,13 @@ if Backbone?
         @$el.find(".responses").append(view.el)
         view.afterInsert()
 
+    renderAddResponseButton: ->
+      console.log('renderAddResponseButton')
+      if @model.hasResponses()
+        @$el.find('div.add-response').show()
+      else
+        @$el.find('div.add-response').hide()
+
     addComment: =>
       @model.comment()
 
@@ -72,6 +87,7 @@ if Backbone?
       comment.set('thread', @model.get('thread'))
       @renderResponse(comment)
       @model.addComment()
+      @renderAddResponseButton()
 
       DiscussionUtil.safeAjax
         $elem: $(event.target)

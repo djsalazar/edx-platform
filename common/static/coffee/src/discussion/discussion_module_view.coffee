@@ -9,6 +9,13 @@ if Backbone?
         (event) -> DiscussionUtil.activateOnSpace(event, @toggleNewPost)
       "click .new-post-cancel": "hideNewPost"
       "click .discussion-paginator a": "navigateToPage"
+      "click .add-response-btn": "scrollToAddResponse"
+
+    scrollToAddResponse: (event) =>
+      event.preventDefault()
+      form = $(event.target).parents('article.discussion-article').find('form.discussion-reply-new')
+      $('html, body').scrollTop(form.offset().top)
+      form.find('.wmd-panel textarea').focus()
 
     paginationTemplate: -> DiscussionUtil.getTemplate("_pagination")
     page_re: /\?discussion_page=(\d+)/

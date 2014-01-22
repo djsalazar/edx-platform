@@ -1511,6 +1511,23 @@ body.discussion {
     }
   }
 
+  .add-response {
+    margin-top: $baseline;
+
+    button.add-response-btn {
+      @include white-button;
+      position: relative;
+      margin-left: -10px;
+      padding: 0px 30px;
+      border: 1px solid #b2b2b2;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+      font-size: 13px;
+      text-align: left;
+      width: 102.6%;
+      @include animation(fadeIn .3s);
+    }
+  }
+
   .vote-btn {
     position: relative;
     z-index: 100;
@@ -1858,6 +1875,24 @@ body.discussion {
     > li {
       margin: 0 $baseline $baseline !important;
       padding: 26px 30px $baseline !important;
+    }
+  }
+
+  .add-response {
+    margin-top: $baseline;
+    margin-bottom: 20px; 
+
+    button.add-response-btn {
+      @include white-button;
+      position: relative;
+      border: 1px solid #b2b2b2;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .15);
+      font-size: 13px;
+      text-align: left;
+      @include animation(fadeIn .3s);
+      width: 94.7%; 
+      padding-left: 30px;
+      margin-left: 20px;
     }
   }
 
