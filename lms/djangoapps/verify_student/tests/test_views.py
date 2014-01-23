@@ -116,24 +116,14 @@ class TestReverifyView(TestCase):
             self.assertIsNotNone(verification_attempt)
         except ObjectDoesNotExist:
             self.fail('No verification object generated')
+        ((template, context), _kwargs) = render_mock.call_args
         self.assertIn('photo_reverification', template)
         self.assertTrue(context['error'])
-
-    @patch.dict(settings.FEATURES, {'AUTOMATIC_VERIFY_STUDENT_IDENTITY_FOR_TESTING': True})
-    def test_reverify_post_success(self):
-        url = reverse('verify_student_reverify')
-        response = self.client.post(url, {'face_image': ',',
-                                          'photo_id_image': ','})
-        self.assertEquals(response.status_code, 302)
-        try:
-            verification_attempt = SoftwareSecurePhotoVerification.objects.get(user=self.user)
-            self.assertIsNotNone(verification_attempt)
-        except ObjectDoesNotExist:
-            self.fail('No verification object generated')
 
 
 @override_settings(MODULESTORE=TEST_DATA_MONGO_MODULESTORE)
 class TestMidCourseReverifyView(TestCase):
+    """ Tests for the midcourse reverification views """
     def setUp(self):
         self.user = UserFactory.create(username="rusty", password="test")
         self.client.login(username="rusty", password="test")
@@ -174,7 +164,6 @@ class TestMidCourseReverifyView(TestCase):
         with self.assertRaises(ObjectDoesNotExist):
             SoftwareSecurePhotoVerification.objects.get(user=self.user, window=window)
 
-    # TODO make this test more detailed
     @patch('verify_student.views.render_to_response', render_mock)
     def test_midcourse_reverify_dash(self):
         url = reverse('verify_student_midcourse_reverify_dash')

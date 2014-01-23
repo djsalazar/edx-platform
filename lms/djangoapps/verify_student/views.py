@@ -400,7 +400,6 @@ def midcourse_reverify_dash(_request):
     Shows the "course reverification dashboard", which displays the reverification status (must reverify,
     pending, approved, failed, etc) of all courses in which a student has a verified enrollment.
     """
-    # TODO same comment as in student/views.py: need to factor out this functionality
     user = _request.user
     course_enrollment_pairs = []
     for enrollment in CourseEnrollment.enrollments_for_user(user):
@@ -426,6 +425,7 @@ def midcourse_reverify_dash(_request):
     }
     return render_to_response("verify_student/midcourse_reverify_dash.html", context)
 
+
 @login_required
 def reverification_submission_confirmation(_request):
     """
@@ -433,12 +433,14 @@ def reverification_submission_confirmation(_request):
     """
     return render_to_response("verify_student/reverification_confirmation.html")
 
+
 @login_required
 def midcourse_reverification_confirmation(_request):
     """
     Shows the user a confirmation page if the submission to SoftwareSecure was successful
     """
     return render_to_response("verify_student/midcourse_reverification_confirmation.html")
+
 
 @login_required
 def reverification_window_expired(_request):

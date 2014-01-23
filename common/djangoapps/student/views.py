@@ -176,6 +176,7 @@ def cert_info(user, course):
 
     return _cert_info(user, course, certificate_status_for_student(user, course.id))
 
+
 def reverification_info(user, course, enrollment):
     """
     If "user" currently needs to be reverified in "course", this returns a four-tuple with re-verification
@@ -190,12 +191,13 @@ def reverification_info(user, course, enrollment):
         if (enrollment.mode == "verified" and not SoftwareSecurePhotoVerification.user_has_valid_or_pending(user, window=window)):
             window = MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC))
             return (
-                    course.id,
-                    course.display_name,
-                    window.end_date,
-                    "must_reverify"  # TODO: reflect more states than just "must_reverify" has_valid_or_pending (must show failure)
+                course.id,
+                course.display_name,
+                window.end_date,
+                "must_reverify"  # TODO: reflect more states than just "must_reverify" has_valid_or_pending (must show failure)
             )
     return None
+
 
 def get_course_enrollment_pairs(user, course_org_filter, org_filter_out_set):
     course_enrollment_pairs = []
