@@ -193,7 +193,8 @@ def reverification_info(user, course, enrollment):
             return (
                 course.id,
                 course.display_name,
-                window.end_date,
+                course.number,
+                window.end_date.strftime('%B %d, %Y %X %p'),
                 "must_reverify"  # TODO: reflect more states than just "must_reverify" has_valid_or_pending (must show failure)
             )
     return None

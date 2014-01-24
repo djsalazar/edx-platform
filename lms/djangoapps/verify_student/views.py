@@ -415,7 +415,8 @@ def midcourse_reverify_dash(_request):
                 (
                     course.id,
                     course.display_name,
-                    MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC)).end_date,
+                    course.number,
+                    MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC)).end_date.strftime('%B %d, %Y %X %p'),
                     "must_reverify"
                 )
             )
