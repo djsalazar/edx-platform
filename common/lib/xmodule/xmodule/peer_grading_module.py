@@ -15,6 +15,7 @@ from xmodule.timeinfo import TimeInfo
 from xmodule.util.duedate import get_extended_due_date
 from xmodule.x_module import XModule, module_attr
 from xmodule.open_ended_grading_classes.peer_grading_service import PeerGradingService, GradingServiceError, MockPeerGradingService
+from lms.envs.common import MAX_ALLOWED_FEEDBACK_LENGTH
 
 from open_ended_grading_classes import combined_open_ended_rubric
 from django.utils.timezone import UTC
@@ -344,6 +345,10 @@ class PeerGradingModule(PeerGradingFields, XModule):
         if not success:
             return self._err_response(message)
 
+        success, message = self._check_feedback_length(data)
+        if not success:
+            return self._err_response(message)
+
         data_dict = {k:data.get(k) for k in required}
         if 'rubric_scores[]' in required:
             data_dict['rubric_scores'] = data.getall('rubric_scores[]')
@@ -637,6 +642,15 @@ class PeerGradingModule(PeerGradingFields, XModule):
         }
 
         return json.dumps(state)
+
+    def _check_feedback_length(self, data):
+        feedback = data.get("feedback")
+        if feedback and len(feedback) > MAX_ALLOWED_FEEDBACK_LENGTH:
+            return False, "Feedback is too long, Max length is {0} characters.".format(
+                MAX_ALLOWED_FEEDBACK_LENGTH
+            )
+        else:
+            return True, ""
 
 
 class PeerGradingDescriptor(PeerGradingFields, RawDescriptor):

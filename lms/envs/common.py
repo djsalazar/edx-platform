@@ -1157,3 +1157,6 @@ LINKEDIN_API = {
     'EMAIL_WHITELIST': [],
     'COMPANY_ID': '2746406',
 }
+
+###################### MAX ALLOWED FEEDBACK ######################
+MAX_ALLOWED_FEEDBACK_LENGTH = 5000
