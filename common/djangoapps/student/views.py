@@ -182,7 +182,7 @@ def reverification_info(user, course, enrollment):
     If "user" currently needs to be reverified in "course", this returns a four-tuple with re-verification
     info for views to display.  Else, returns None.
 
-    Four-tuple data: (course_id, course_display_name, reverification_end_date, reverification_status)
+    Five-tuple data: (course_id, course_display_name, course_number, reverification_end_date, reverification_status)
     """
     # IF the reverification window is open
     if (MidcourseReverificationWindow.window_open_for_course(course.id)):
@@ -195,7 +195,7 @@ def reverification_info(user, course, enrollment):
                 course.display_name,
                 course.number,
                 window.end_date.strftime('%B %d, %Y %X %p'),
-                "must_reverify"  # TODO: reflect more states than just "must_reverify" has_valid_or_pending (must show failure)
+                SoftwareSecurePhotoVerification.user_status(user, window)
             )
     return None
 

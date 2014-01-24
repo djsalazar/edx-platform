@@ -24,14 +24,15 @@ from django.contrib.auth.decorators import login_required
 
 from course_modes.models import CourseMode
 from student.models import CourseEnrollment
-from student.views import course_from_id
+from student.views import course_from_id, reverification_info
 from shoppingcart.models import Order, CertificateItem
 from shoppingcart.processors.CyberSource import (
     get_signed_purchase_params, get_purchase_endpoint
 )
 from verify_student.models import (
-    SoftwareSecurePhotoVerification, MidcourseReverificationWindow,
+    SoftwareSecurePhotoVerification,
 )
+from reverification.models import MidcourseReverificationWindow
 import ssencrypt
 from xmodule.modulestore.exceptions import ItemNotFoundError
 from .exceptions import WindowExpiredException
@@ -410,16 +411,10 @@ def midcourse_reverify_dash(_request):
                       .format(user.username, enrollment.course_id))
     reverify_course_data = []
     for (course, enrollment) in course_enrollment_pairs:
-        if MidcourseReverificationWindow.window_open_for_course(course.id):
-            reverify_course_data.append(
-                (
-                    course.id,
-                    course.display_name,
-                    course.number,
-                    MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC)).end_date.strftime('%B %d, %Y %X %p'),
-                    "must_reverify"
-                )
-            )
+        info = reverification_info(user, course, enrollment)
+        if info:
+            reverify_course_data.append(info)
+
     context = {
         "user_full_name": _request.user.profile.name,
         "reverify_course_data": reverify_course_data,
