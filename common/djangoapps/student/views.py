@@ -179,8 +179,12 @@ def cert_info(user, course):
 
 def reverification_info(user, course, enrollment):
     """
-    If "user" currently needs to be reverified in "course", this returns a four-tuple with re-verification
-    info for views to display.  Else, returns None.
+    If
+    - a course has an open re-verification window, and
+    - that user has a verified enrollment in the course
+    then we return a tuple with relevant information.
+
+    Else, return None.
 
     Five-tuple data: (course_id, course_display_name, course_number, reverification_end_date, reverification_status)
     """
@@ -188,14 +192,14 @@ def reverification_info(user, course, enrollment):
     if (MidcourseReverificationWindow.window_open_for_course(course.id)):
         # AND the user is actually verified-enrolled AND they don't have a pending reverification already
         window = MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC))
-        if (enrollment.mode == "verified" and not SoftwareSecurePhotoVerification.user_has_valid_or_pending(user, window=window)):
+        if(enrollment.mode == "verified"):
             window = MidcourseReverificationWindow.get_window(course.id, datetime.datetime.now(UTC))
             return (
                 course.id,
                 course.display_name,
                 course.number,
                 window.end_date.strftime('%B %d, %Y %X %p'),
-                SoftwareSecurePhotoVerification.user_status(user, window)
+                SoftwareSecurePhotoVerification.user_status(user, window)[0],
             )
     return None
 
@@ -415,11 +419,21 @@ def dashboard(request):
     verification_status, verification_msg = SoftwareSecurePhotoVerification.user_status(user)
 
     # Gets data for midcourse reverifications, if any are necessary or have failed
-    reverify_course_data = []
+    reverifications_must_reverify = []
+    reverifications_denied = []
+    reverifications_pending = []
+    reverifications_approved = []
     for (course, enrollment) in course_enrollment_pairs:
         info = reverification_info(user, course, enrollment)
         if info:
-            reverify_course_data.append(info)
+            if "approved" in info:
+                reverifications_approved.append(info)
+            elif "pending" in info:
+                reverifications_pending.append(info)
+            elif "must_reverify" in info:
+                reverifications_must_reverify.append(info)
+            elif "denied" in info:
+                reverifications_denied.append(info)
 
     show_refund_option_for = frozenset(course.id for course, _enrollment in course_enrollment_pairs
                                        if _enrollment.refundable())
@@ -441,7 +455,10 @@ def dashboard(request):
                'all_course_modes': course_modes,
                'cert_statuses': cert_statuses,
                'show_email_settings_for': show_email_settings_for,
-               'reverify_course_data': reverify_course_data,
+               'reverifications_must_reverify': reverifications_must_reverify,
+               'reverifications_denied': reverifications_denied,
+               'reverifications_pending': reverifications_pending,
+               'reverifications_approved': reverifications_approved,
                'verification_status': verification_status,
                'verification_msg': verification_msg,
                'show_refund_option_for': show_refund_option_for,
