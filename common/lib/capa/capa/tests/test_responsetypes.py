@@ -643,26 +643,30 @@ class StringResponseTest(ResponseTest):
 
     def test_case_sensitive(self):
         # Test single answer
-        problem = self.build_problem(answer="Second", case_sensitive=True)
+        problem_specified = self.build_problem(answer="Second", case_sensitive=True)
+        # should also be case_sensitive if case sensitivity is not specified
+        problem_not_specified = self.build_problem(answer="Second")
+        problems = [problem_specified, problem_not_specified]
 
-        # Exact string should be correct
-        self.assert_grade(problem, "Second", "correct")
-
-        # Other strings and the lowercase version of the string are incorrect
-        self.assert_grade(problem, "Other String", "incorrect")
-        self.assert_grade(problem, "second", "incorrect")
-
-        # Test multiple answers
-        answers = ["Second", "Third", "Fourth"]
-        problem = self.build_problem(answer="sample_answer", case_sensitive=True, additional_answers=answers)
-
-        for answer in answers:
+        for problem in problems:
             # Exact string should be correct
-            self.assert_grade(problem, answer, "correct")
+            self.assert_grade(problem, "Second", "correct")
 
-        # Other strings and the lowercase version of the string are incorrect
-        self.assert_grade(problem, "Other String", "incorrect")
-        self.assert_grade(problem, "second", "incorrect")
+            # Other strings and the lowercase version of the string are incorrect
+            self.assert_grade(problem, "Other String", "incorrect")
+            self.assert_grade(problem, "second", "incorrect")
+
+            # Test multiple answers
+            answers = ["Second", "Third", "Fourth"]
+            problem = self.build_problem(answer="sample_answer", case_sensitive=True, additional_answers=answers)
+
+            for answer in answers:
+                # Exact string should be correct
+                self.assert_grade(problem, answer, "correct")
+
+            # Other strings and the lowercase version of the string are incorrect
+            self.assert_grade(problem, "Other String", "incorrect")
+            self.assert_grade(problem, "second", "incorrect")
 
     def test_bogus_escape_not_raised(self):
         """
