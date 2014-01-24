@@ -3,7 +3,6 @@ import datetime
 import os
 import pytz
 from mock import patch
-from datetime import datetime
 from pytz import UTC
 from nose.tools import assert_equal
 from splinter.exceptions import ElementDoesNotExist
@@ -163,7 +162,6 @@ def create_course_for_lti(course, metadata):
                 },
             ]
         },
-        start=datetime(2012, 2, 3, tzinfo=UTC),
     )
     # Add a section to the course to contain problems
     world.scenario_dict['CHAPTER'] = world.ItemFactory.create(
