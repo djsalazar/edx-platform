@@ -1799,23 +1799,32 @@
   &.midcourse-reverification-process {
 
     // step-dash
+
+    .content-main > .title {
+      @extend %t-title4;
+      display: block;
+      font-weight: bold;
+      text-transform: none;
+      color: $black;
+    }
+
     .action-reverify {
-      @extend %btn-verify-primary;
+      //@extend %btn-verify-primary;
       padding: ($baseline/2) ($baseline*0.75);
     }
 
-    .reverification-table {
-      width: 100%;
+    .reverification-list {
+      list-style-type: none;
 
-      th {
-        display: none;
+      .item {
+        margin: ($baseline*1.5) 0;
       }
 
-      th,
-      td {
-        padding: ($baseline/2) 0;
-        text-align: left;
-        border-bottom: 1px solid $light-gray;
+      .course-info,
+      .reverify-status {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: $baseline;
       }
 
       .course-name {
@@ -1832,7 +1841,9 @@
 
 
     .wrapper-reverification-help {
-      margin-top: $baseline*2;
+      margin-top: $baseline;
+      border-top: 1px solid $light-gray;
+      padding-top: ($baseline*1.5);
 
       .faq-item {
         display: inline-block;
